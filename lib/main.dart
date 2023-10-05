@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hacker_news/screens/home_screen.dart';
+import 'package:hacker_news/view_models/comment_list_view_model.dart';
 import 'package:hacker_news/view_models/story_list_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -13,8 +14,12 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Hacker News",
-      home: ChangeNotifierProvider(
-        create: (context) => StoryListViewModel()..getTopStories(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => StoryListViewModel()..getTopStories(),
+          ),
+        ],
         child: const HomeScreen(),
       ),
     );

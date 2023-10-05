@@ -1,6 +1,7 @@
-
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:hacker_news/models/comment.dart';
 import 'package:hacker_news/models/story.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,5 +33,21 @@ class ApiService {
     } else {
       throw Exception("Failed to get story");
     }
+  }
+
+  Future<List<Comment>> fetchCommentByStoryID(Story story) async {
+    return Future.wait(story.commentIds.map((commentID) async {
+      final url =
+          "https://hacker-news.firebaseio.com/v0/item/$commentID.json?print=pretty";
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final decodedJson = jsonDecode(response.body);
+        log('decodedJson ==> $decodedJson');
+        return Comment.fromJson(decodedJson);
+      } else {
+        throw Exception('No result found');
+      }
+    }).toList());
   }
 }
